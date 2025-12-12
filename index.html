@@ -3,100 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistert Selvhjelp Demo</title>
+    <title>Assistert Selvhjelp - Artikkel</title>
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f7f6; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        textarea { width: 100%; height: 300px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; resize: vertical; }
-        button { background-color: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        button:hover { background-color: #0056b3; }
-        #status { margin-top: 15px; font-weight: bold; }
-        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        /* Grunnleggende design for å se ut som en moderne nettside */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            background-color: #f9f9f9; 
+            color: #333; 
+        }
+
+        /* Header / Meny */
+        header {
+            background-color: white;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+        }
+
+        .logo { font-weight: bold; font-size: 1.2em; color: #0056b3; }
+
+        /* Språkvelgeren */
+        .language-selector { display: flex; align-items: center; gap: 10px; }
+        select { 
+            padding: 8px 12px; 
+            border-radius: 20px; 
+            border: 1px solid #ccc; 
+            font-size: 14px; 
+            cursor: pointer; 
+            background-color: #f0f0f0;
+        }
+        select:hover { background-color: #e0e0e0; }
+
+        /* Selve artikkelen */
+        main {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        h1 { color: #2c3e50; margin-top: 0; }
+        
+        .article-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #444;
+            white-space: pre-line; /* Bevarer linjeskift fra teksten */
+        }
+
+        /* Laste-indikator */
+        .loading { opacity: 0.5; pointer-events: none; transition: opacity 0.3s; }
+        #loading-text { display: none; font-size: 0.9em; color: #007bff; margin-right: 10px;}
+
     </style>
 </head>
 <body>
 
-    <h1>Oversettelse Demo (Auto-Detect)</h1>
+    <header>
+        <div class="logo">Assistert Selvhjelp</div>
+        
+        <div class="language-selector">
+            <span id="loading-text">Oversetter...</span>
+            <select id="langSelect" onchange="changeLanguage()">
+                <option value="NO">🇳🇴 Norsk (Original)</option>
+                <option value="EN-GB">🇬🇧 Engelsk</option>
+                <option value="PL">🇵🇱 Polsk</option>
+                <option value="DE">🇩🇪 Tysk</option>
+                <option value="ES">🇪🇸 Spansk</option>
+                <option value="FR">🇫🇷 Fransk</option>
+            </select>
+        </div>
+    </header>
 
-    <div class="card">
-        <label>API Nøkkel:</label>
-        <input type="text" id="apiKey" value="83dcebb3-5c3e-4843-9124-1c4d05f002c8:fx">
-    </div>
-
-    <div class="card">
-        <h3>Norsk Tekst</h3>
-        <textarea id="sourceText">Hva er depresjon?
-
+    <main id="article-container">
+        <h1 id="article-title">Hva er depresjon?</h1>
+        
+        <div id="article-body" class="article-text">
 Det er helt normalt å føle seg nedfor, trist eller deppa innimellom, og sorg er en naturlig reaksjon når vi mister noe eller noen som betyr mye for oss. Depresjon er ikke det samme som å føle seg nedfor.
 
 Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør over en lang periode. Det er en tilstand preget av nedstemthet, lav selvfølelse og mindre interesse for aktiviteter som tidligere gav glede. Du kan også føle deg nedtrykt, sint og irritabel, eller tom for energi. Noen får også konsentrasjonsproblemer og husker dårligere.
 
-... heldigvis er det veldig gode muligheter for å bli frisk igjen.</textarea>
-        
-        <button onclick="translateText()" id="btn">Oversett til Engelsk</button>
-        <p id="status"></p>
-    </div>
+... heldigvis er det veldig gode muligheter for å bli frisk igjen.
 
-    <div class="card">
-        <h3>Engelsk Resultat</h3>
-        <textarea id="targetText" readonly></textarea>
-    </div>
+Depresjon kan ramme oss alle. Det er anslått at depresjon rammer én av fire personer i løpet av livet, og ulike faktorer kan være utløsende. For noen kan tidligere vonde opplevelser være den underliggende årsaken. For andre kan det være den nåværende situasjonen, for eksempel tapsopplevelser eller langvarige belastninger, som er den viktigste årsaken. Noen er også mer sårbare av natur.
+        </div>
+    </main>
+
+    <input type="hidden" id="apiKey" value="83dcebb3-5c3e-4843-9124-1c4d05f002c8:fx">
 
     <script>
-        // Denne funksjonen kjøres når du trykker på knappen
-        async function translateText() {
-            console.log("Knapp trykket! Starter oversettelse..."); // Sjekk konsollen (F12) for denne beskjeden
-            
+        // Vi lagrer originalteksten i minnet, slik at vi alltid kan gå tilbake til norsk uten å bruke API
+        const originalTitle = document.getElementById('article-title').innerText;
+        const originalBody = document.getElementById('article-body').innerText;
+
+        async function changeLanguage() {
+            const lang = document.getElementById('langSelect').value;
+            const titleEl = document.getElementById('article-title');
+            const bodyEl = document.getElementById('article-body');
+            const loadingText = document.getElementById('loading-text');
             const apiKey = document.getElementById('apiKey').value;
-            const text = document.getElementById('sourceText').value;
-            const statusEl = document.getElementById('status');
-            const targetEl = document.getElementById('targetText');
-            const btn = document.getElementById('btn');
 
-            statusEl.innerText = "Jobber...";
-            statusEl.style.color = "blue";
-            btn.disabled = true;
+            // Hvis bruker velger Norsk, tilbakestill til originalen umiddelbart
+            if (lang === 'NO') {
+                titleEl.innerText = originalTitle;
+                bodyEl.innerText = originalBody;
+                return;
+            }
 
-            // Proxy brukes for å unngå CORS-feil lokalt
+            // Vis at vi jobber
+            document.getElementById('article-container').classList.add('loading');
+            loadingText.style.display = 'inline';
+
+            try {
+                // Vi må oversette Tittel og Innhold hver for seg
+                // 1. Oversett Tittel
+                const newTitle = await translateString(originalTitle, lang, apiKey);
+                titleEl.innerText = newTitle;
+
+                // 2. Oversett Innhold (Vi oversetter alltid FRA originalen for best kvalitet)
+                const newBody = await translateString(originalBody, lang, apiKey);
+                bodyEl.innerText = newBody;
+
+            } catch (error) {
+                alert("Kunne ikke oversette: " + error.message);
+                // Hvis det feiler, gå tilbake til norsk i menyen
+                document.getElementById('langSelect').value = 'NO';
+            } finally {
+                // Ferdig
+                document.getElementById('article-container').classList.remove('loading');
+                loadingText.style.display = 'none';
+            }
+        }
+
+        // Hjelpefunksjon som kaller API-et
+        async function translateString(textToTranslate, targetLang, key) {
             const deepLUrl = "https://api-free.deepl.com/v2/translate";
             const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(deepLUrl);
 
-            try {
-                const params = new URLSearchParams();
-                params.append('auth_key', apiKey);
-                params.append('text', text);
-                // VIKTIG: Vi har fjernet 'source_lang' helt. 
-                // DeepL skjønner automatisk at det er norsk.
-                params.append('target_lang', 'EN-GB'); 
+            const params = new URLSearchParams();
+            params.append('auth_key', key);
+            params.append('text', textToTranslate);
+            params.append('target_lang', targetLang); 
+            // Vi lar source_lang være auto (slettet linjen)
 
-                const response = await fetch(proxyUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: params
-                });
+            const response = await fetch(proxyUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            });
 
-                if (!response.ok) {
-                    const err = await response.text();
-                    throw new Error(err); // Kaster feilmeldingen videre til catch-blokken
-                }
+            if (!response.ok) throw new Error("Feil fra API");
 
-                const data = await response.json();
-                
-                if (data.translations && data.translations.length > 0) {
-                    targetEl.value = data.translations[0].text;
-                    statusEl.innerText = "Suksess!";
-                    statusEl.style.color = "green";
-                } else {
-                    statusEl.innerText = "Fikk svar, men ingen oversettelse.";
-                }
-
-            } catch (error) {
-                console.error("Noe gikk galt:", error);
-                statusEl.innerText = "Feil: " + error.message;
-                statusEl.style.color = "red";
-            } finally {
-                btn.disabled = false;
-            }
+            const data = await response.json();
+            return data.translations[0].text;
         }
     </script>
 </body>

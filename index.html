@@ -3,29 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo: Assistert Selvhjelp KI-Oversettelse</title>
+    <title>Demo: Assistert Selvhjelp Oversettelse</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f7f6; color: #333; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 900px; 
+            margin: 40px auto; 
+            padding: 20px; 
+            background-color: #f4f7f6; 
+            color: #333; 
+        }
         h1 { color: #2c3e50; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            margin-bottom: 20px; 
+        }
         .input-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], textarea, input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        textarea { height: 150px; resize: vertical; }
-        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 10px; }
+        input[type="text"], textarea, input[type="password"], select { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-family: inherit;
+        }
+        /* Gjør tekstboksene høyere for å få plass til mer tekst */
+        textarea { height: 400px; resize: vertical; line-height: 1.5; }
+        
+        button { 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold;
+        }
         button:hover { background-color: #0056b3; }
-        button.secondary { background-color: #6c757d; }
-        #status { margin-top: 10px; font-style: italic; color: #666; }
-        .warning { background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; font-size: 0.9em; margin-bottom: 20px; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        #status { margin-top: 15px; font-style: italic; color: #666; font-weight: 500;}
+        .warning { 
+            background-color: #fff3cd; 
+            color: #856404; 
+            padding: 15px; 
+            border-radius: 4px; 
+            font-size: 0.9em; 
+            margin-bottom: 20px; 
+            border-left: 5px solid #ffeeba;
+        }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <h1>Demo: KI-Oversettelse</h1>
+    <h1>Demo: Assistert Selvhjelp Oversettelse</h1>
 
     <div class="warning">
-        <strong>Sikkerhet:</strong> Denne siden sender teksten din til DeepL. 
-        API-nøkkelen din lagres <em>ikke</em> i koden, men brukes kun i denne sesjonen.
+        <strong>Sikkerhetsmodus:</strong> API-nøkkelen din lagres kun i nettleseren mens du tester. 
+        Ingenting lagres på serveren.
     </div>
 
     <div class="card">
@@ -43,19 +85,57 @@
         </div>
     </div>
 
-    <div class="card">
-        <h3>2. Norsk Innhold (Input)</h3>
-        <div class="input-group">
-            <textarea id="sourceText">Her er en øvelse om mestring. Det er normalt å føle seg nedstemt av og til. Grubling kan ofte forsterke disse følelsene.</textarea>
-        </div>
-        <button onclick="translateText()">Oversett til Engelsk</button>
-        <p id="status"></p>
-    </div>
+    <div class="grid">
+        <div class="card">
+            <h3>2. Norsk Kildetekst</h3>
+            <textarea id="sourceText">Hva er depresjon?
 
-    <div class="card">
-        <h3>3. Resultat (Engelsk)</h3>
-        <div class="input-group">
-            <textarea id="targetText" readonly placeholder="Oversettelsen dukker opp her..."></textarea>
+Det er helt normalt å føle seg nedfor, trist eller deppa innimellom, og sorg er en naturlig reaksjon når vi mister noe eller noen som betyr mye for oss. Depresjon er ikke det samme som å føle seg nedfor.
+
+Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør over en lang periode. Det er en tilstand preget av nedstemthet, lav selvfølelse og mindre interesse for aktiviteter som tidligere gav glede. Du kan også føle deg nedtrykt, sint og irritabel, eller tom for energi. Noen får også konsentrasjonsproblemer og husker dårligere.
+
+... heldigvis er det veldig gode muligheter for å bli frisk igjen.
+
+Depresjon kan ramme oss alle. Det er anslått at depresjon rammer én av fire personer i løpet av livet, og ulike faktorer kan være utløsende. For noen kan tidligere vonde opplevelser være den underliggende årsaken. For andre kan det være den nåværende situasjonen, for eksempel tapsopplevelser eller langvarige belastninger, som er den viktigste årsaken. Noen er også mer sårbare av natur.
+
+Sagt om depresjon:
+"Depresjon er som å være fargeblind og konstant bli fortalt hvor fargerik verden er." – Atticus Poetry
+"Psykisk smerte er mindre dramatisk enn fysisk smerte, men den er mer vanlig og også vanskeligere å bære." – C.S. Lewis
+"God humor er styrkende for kropp og sinn. Det er den beste motgiften for angst og depresjon. Det er en ressurs. Det tiltrekker seg og beholder venner. Det letter menneskelige byrder. Det er den direkte ruten til ro og tilfredshet." – Greenville Kleiser
+
+I had a black dog, his name was depression.
+Winston Churchill fortalte at han opplevde at han hadde med seg en sort hund hvor enn han gikk. I ettertid har vi skjønt at han i flere år var plaget med depressive perioder, og at han mente disse periodene når han snakket om den sorte hunden. Her er en fin film fra WHO om depresjon, symbolisert med den sorte hunden.
+
+I en depresjon er det som om man ser livet gjennom mørke briller. Dette innebærer negative tanker om seg selv, fremtiden og situasjonen rundt. Det er vanlig å ha tanker som "Alt er håpløst" og "Jeg er en taper", og stadig stille seg selv spørsmål om hvorfor det har blitt slik. Man angrer ofte på ting man har gjort, noe som fører med seg følelse av skyld eller skam. I så fall kan det også bli vanskelig å ta avgjørelser fordi man kan bli redd for å gjøre nye feil.
+
+Hva er vanlige symptomer på depresjon?
+- Redusert selvfølelse og selvtillit
+- Skyldfølelse og mindreverdighetsfølelse
+- Problemer med konsentrasjon og oppmerksomhet
+- Tanker og planer om selvmord
+- Tretthet og initiativløshet
+- Søvnforstyrrelser
+- Mer eller mindre matlyst
+- Følelse av "låst" kropp som gjør bevegelse vanskelig
+- Uro og rastløshet
+- Angst og bekymring
+
+Symptomene på depresjon skaper onde sirkler. De bidrar ofte til isolasjon og nedsatt aktivitetsnivå, hvor man slutter å gjøre ting som tidligere ga glede, mening og mestring. Dette igjen er med på å opprettholde depresjonen – eller «depresjonens onde sirkel». For å få det bedre, er det viktig å jobbe med både tanker og atferd!
+
+Symptomene ved depresjon kan føles veldig merkbare og inngripende i hverdagen. Dette kan være vanskelig å håndtere på egen hånd, men heldigvis finnes det god behandling som kan gi verktøyene du trenger for å bli bedre!
+
+En av de mest brukte behandlingsmetodene ved depresjon er kognitiv atferdsterapi. Hovedfokus i denne metoden er å bryte «depresjonens onde sirkel» og mønstre som er med å opprettholde symptomene. Det innebærer å gradvis starte opp med aktiviteter igjen, selv om både motivasjonen og lysten er totalt fraværende. Du må også forberede deg på å utfordre tankene dine og vise større hensyn til deg selv og kroppen din.
+
+"Å bli bedre fra depresjon krever varig forpliktelse. Jeg har tatt på meg den forpliktelsen for mitt eget livs skyld, og for de som elsker meg." – Susan Polis Schutz</textarea>
+            <div style="margin-top: 10px;">
+                <button onclick="translateText()" id="translateBtn">Kjør Oversettelse</button>
+            </div>
+            <p id="status"></p>
+        </div>
+
+        <div class="card">
+            <h3>3. Engelsk Resultat</h3>
+            <textarea id="targetText" readonly placeholder="Resultatet dukker opp her..."></textarea>
         </div>
     </div>
 
@@ -66,52 +146,57 @@
             const apiType = document.getElementById('apiType').value;
             const statusEl = document.getElementById('status');
             const targetEl = document.getElementById('targetText');
+            const btn = document.getElementById('translateBtn');
 
             if (!apiKey) {
                 alert("Du må lime inn en API-nøkkel først!");
                 return;
             }
 
-            statusEl.innerText = "Jobber med saken...";
+            // Vis at vi jobber
+            statusEl.innerText = "Sender til DeepL...";
+            statusEl.style.color = "#007bff";
+            btn.disabled = true;
+            btn.innerText = "Oversetter...";
             targetEl.value = "";
 
-            // Velg riktig URL basert på om du har Free eller Pro konto
             const url = apiType === 'free' 
                 ? 'https://api-free.deepl.com/v2/translate' 
                 : 'https://api.deepl.com/v2/translate';
 
             try {
-                // Vi bruker URLSearchParams for å sende data som x-www-form-urlencoded
                 const params = new URLSearchParams();
                 params.append('auth_key', apiKey);
                 params.append('text', text);
-                params.append('target_lang', 'EN-GB'); // Engelsk (Britisk)
+                params.append('target_lang', 'EN-GB'); // Britisk Engelsk
                 params.append('source_lang', 'NO');
 
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: params
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Feilmelding fra DeepL: ${response.status}`);
+                    throw new Error(`Feilkode: ${response.status} (${response.statusText})`);
                 }
 
                 const data = await response.json();
                 
-                // Vis resultatet
                 if (data.translations && data.translations.length > 0) {
                     targetEl.value = data.translations[0].text;
-                    statusEl.innerText = "Ferdig!";
+                    statusEl.innerText = "Oversettelse fullført!";
+                    statusEl.style.color = "green";
                 }
 
             } catch (error) {
                 console.error(error);
-                statusEl.innerText = "Noe gikk galt: " + error.message;
-                alert("Klarte ikke koble til. Sjekk at API-nøkkelen er riktig og at du valgte rett API-type (Free/Pro).");
+                statusEl.innerText = "Feil oppstod: " + error.message;
+                statusEl.style.color = "red";
+                alert("Noe gikk galt. Sjekk at nøkkelen er riktig.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Kjør Oversettelse";
             }
         }
     </script>

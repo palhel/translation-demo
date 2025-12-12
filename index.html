@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo: Assistert Selvhjelp Oversettelse</title>
+    <title>Demo: Assistert Selvhjelp Oversettelse (CORS Fix)</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -31,7 +31,6 @@
             box-sizing: border-box; 
             font-family: inherit;
         }
-        /* Gjør tekstboksene høyere for å få plass til mer tekst */
         textarea { height: 400px; resize: vertical; line-height: 1.5; }
         
         button { 
@@ -66,20 +65,20 @@
     <h1>Demo: Assistert Selvhjelp Oversettelse</h1>
 
     <div class="warning">
-        <strong>Sikkerhetsmodus:</strong> API-nøkkelen din lagres kun i nettleseren mens du tester. 
-        Ingenting lagres på serveren.
+        <strong>OBS:</strong> Denne versjonen bruker en proxy for å omgå sikkerhetssperren i nettleseren din. 
+        Dette er helt greit for testing, men skal <em>aldri</em> brukes på den ekte nettsiden.
     </div>
 
     <div class="card">
         <h3>1. Oppsett</h3>
         <div class="input-group">
             <label for="apiKey">Din DeepL API-nøkkel (Auth Key):</label>
-            <input type="password" id="apiKey" placeholder="Lim inn nøkkel her (f.eks. xxxxx-xxxx...)">
+            <input type="password" id="apiKey" placeholder="Lim inn nøkkel her (f.eks. xxxxx:fx)">
         </div>
         <div class="input-group">
             <label>API Type:</label>
             <select id="apiType">
-                <option value="free">DeepL API Free (api-free.deepl.com)</option>
+                <option value="free" selected>DeepL API Free (api-free.deepl.com)</option>
                 <option value="pro">DeepL API Pro (api.deepl.com)</option>
             </select>
         </div>
@@ -154,15 +153,20 @@ En av de mest brukte behandlingsmetodene ved depresjon er kognitiv atferdsterapi
             }
 
             // Vis at vi jobber
-            statusEl.innerText = "Sender til DeepL...";
+            statusEl.innerText = "Sender til DeepL (via proxy)...";
             statusEl.style.color = "#007bff";
             btn.disabled = true;
             btn.innerText = "Oversetter...";
             targetEl.value = "";
 
-            const url = apiType === 'free' 
+            // Velg riktig DeepL URL
+            const deepLBaseUrl = apiType === 'free' 
                 ? 'https://api-free.deepl.com/v2/translate' 
                 : 'https://api.deepl.com/v2/translate';
+
+            // BRUK PROXY: Vi sender forespørselen via corsproxy.io for å unngå CORS-feil i nettleseren
+            // OBS: Dette skal kun gjøres i testing, ikke i produksjon.
+            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(deepLBaseUrl);
 
             try {
                 const params = new URLSearchParams();
@@ -171,14 +175,15 @@ En av de mest brukte behandlingsmetodene ved depresjon er kognitiv atferdsterapi
                 params.append('target_lang', 'EN-GB'); // Britisk Engelsk
                 params.append('source_lang', 'NO');
 
-                const response = await fetch(url, {
+                const response = await fetch(proxyUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: params
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Feilkode: ${response.status} (${response.statusText})`);
+                    const errText = await response.text();
+                    throw new Error(`Feilkode: ${response.status}. Detaljer: ${errText}`);
                 }
 
                 const data = await response.json();
@@ -193,7 +198,7 @@ En av de mest brukte behandlingsmetodene ved depresjon er kognitiv atferdsterapi
                 console.error(error);
                 statusEl.innerText = "Feil oppstod: " + error.message;
                 statusEl.style.color = "red";
-                alert("Noe gikk galt. Sjekk at nøkkelen er riktig.");
+                alert("Noe gikk galt. Sjekk konsollen (F12) for detaljer.");
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Kjør Oversettelse";

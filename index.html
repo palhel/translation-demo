@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Assistert Selvhjelp KI-Oversettelse</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f7f6; color: #333; }
+        h1 { color: #2c3e50; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], textarea, input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        textarea { height: 150px; resize: vertical; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 10px; }
+        button:hover { background-color: #0056b3; }
+        button.secondary { background-color: #6c757d; }
+        #status { margin-top: 10px; font-style: italic; color: #666; }
+        .warning { background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; font-size: 0.9em; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>Demo: KI-Oversettelse</h1>
+
+    <div class="warning">
+        <strong>Sikkerhet:</strong> Denne siden sender teksten din til DeepL. 
+        API-nøkkelen din lagres <em>ikke</em> i koden, men brukes kun i denne sesjonen.
+    </div>
+
+    <div class="card">
+        <h3>1. Oppsett</h3>
+        <div class="input-group">
+            <label for="apiKey">Din DeepL API-nøkkel (Auth Key):</label>
+            <input type="password" id="apiKey" placeholder="Lim inn nøkkel her (f.eks. xxxxx-xxxx...)">
+        </div>
+        <div class="input-group">
+            <label>API Type:</label>
+            <select id="apiType">
+                <option value="free">DeepL API Free (api-free.deepl.com)</option>
+                <option value="pro">DeepL API Pro (api.deepl.com)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>2. Norsk Innhold (Input)</h3>
+        <div class="input-group">
+            <textarea id="sourceText">Her er en øvelse om mestring. Det er normalt å føle seg nedstemt av og til. Grubling kan ofte forsterke disse følelsene.</textarea>
+        </div>
+        <button onclick="translateText()">Oversett til Engelsk</button>
+        <p id="status"></p>
+    </div>
+
+    <div class="card">
+        <h3>3. Resultat (Engelsk)</h3>
+        <div class="input-group">
+            <textarea id="targetText" readonly placeholder="Oversettelsen dukker opp her..."></textarea>
+        </div>
+    </div>
+
+    <script>
+        async function translateText() {
+            const apiKey = document.getElementById('apiKey').value;
+            const text = document.getElementById('sourceText').value;
+            const apiType = document.getElementById('apiType').value;
+            const statusEl = document.getElementById('status');
+            const targetEl = document.getElementById('targetText');
+
+            if (!apiKey) {
+                alert("Du må lime inn en API-nøkkel først!");
+                return;
+            }
+
+            statusEl.innerText = "Jobber med saken...";
+            targetEl.value = "";
+
+            // Velg riktig URL basert på om du har Free eller Pro konto
+            const url = apiType === 'free' 
+                ? 'https://api-free.deepl.com/v2/translate' 
+                : 'https://api.deepl.com/v2/translate';
+
+            try {
+                // Vi bruker URLSearchParams for å sende data som x-www-form-urlencoded
+                const params = new URLSearchParams();
+                params.append('auth_key', apiKey);
+                params.append('text', text);
+                params.append('target_lang', 'EN-GB'); // Engelsk (Britisk)
+                params.append('source_lang', 'NO');
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: params
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Feilmelding fra DeepL: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Vis resultatet
+                if (data.translations && data.translations.length > 0) {
+                    targetEl.value = data.translations[0].text;
+                    statusEl.innerText = "Ferdig!";
+                }
+
+            } catch (error) {
+                console.error(error);
+                statusEl.innerText = "Noe gikk galt: " + error.message;
+                alert("Klarte ikke koble til. Sjekk at API-nøkkelen er riktig og at du valgte rett API-type (Free/Pro).");
+            }
+        }
+    </script>
+</body>
+</html>

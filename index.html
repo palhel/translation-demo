@@ -63,7 +63,6 @@ Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør ove
                 const params = new URLSearchParams();
                 params.append('auth_key', apiKey);
                 params.append('text', text);
-                params.append('source_lang', 'NB'); // VIKTIG ENDRING: NB, ikke NO
                 params.append('target_lang', 'EN-GB');
 
                 const response = await fetch(proxyUrl, {

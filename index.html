@@ -3,177 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo: Assistert Selvhjelp Oversettelse (CORS Fix)</title>
+    <title>Assistert Selvhjelp Oversettelse (FIXED)</title>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            max-width: 900px; 
-            margin: 40px auto; 
-            padding: 20px; 
-            background-color: #f4f7f6; 
-            color: #333; 
-        }
-        h1 { color: #2c3e50; }
-        .card { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-            margin-bottom: 20px; 
-        }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], textarea, input[type="password"], select { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-            box-sizing: border-box; 
-            font-family: inherit;
-        }
-        textarea { height: 400px; resize: vertical; line-height: 1.5; }
-        
-        button { 
-            background-color: #007bff; 
-            color: white; 
-            border: none; 
-            padding: 12px 24px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            font-size: 16px; 
-            font-weight: bold;
-        }
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f7f6; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        textarea { width: 100%; height: 300px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; resize: vertical; }
+        button { background-color: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
         button:hover { background-color: #0056b3; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-        
-        #status { margin-top: 15px; font-style: italic; color: #666; font-weight: 500;}
-        .warning { 
-            background-color: #fff3cd; 
-            color: #856404; 
-            padding: 15px; 
-            border-radius: 4px; 
-            font-size: 0.9em; 
-            margin-bottom: 20px; 
-            border-left: 5px solid #ffeeba;
-        }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        #status { margin-top: 15px; font-weight: bold; }
+        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
     </style>
 </head>
 <body>
 
-    <h1>Demo: Assistert Selvhjelp Oversettelse</h1>
+    <h1>Oversettelse Test</h1>
 
-    <div class="warning">
-        <strong>OBS:</strong> Denne versjonen bruker en proxy for å omgå sikkerhetssperren i nettleseren din. 
-        Dette er helt greit for testing, men skal <em>aldri</em> brukes på den ekte nettsiden.
+    <div class="card">
+        <label>API Nøkkel:</label>
+        <input type="text" id="apiKey" value="83dcebb3-5c3e-4843-9124-1c4d05f002c8:fx">
     </div>
 
     <div class="card">
-        <h3>1. Oppsett</h3>
-        <div class="input-group">
-            <label for="apiKey">Din DeepL API-nøkkel (Auth Key):</label>
-            <input type="password" id="apiKey" placeholder="Lim inn nøkkel her (f.eks. xxxxx:fx)">
-        </div>
-        <div class="input-group">
-            <label>API Type:</label>
-            <select id="apiType">
-                <option value="free" selected>DeepL API Free (api-free.deepl.com)</option>
-                <option value="pro">DeepL API Pro (api.deepl.com)</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="grid">
-        <div class="card">
-            <h3>2. Norsk Kildetekst</h3>
-            <textarea id="sourceText">Hva er depresjon?
+        <h3>Norsk Tekst (NB)</h3>
+        <textarea id="sourceText">Hva er depresjon?
 
 Det er helt normalt å føle seg nedfor, trist eller deppa innimellom, og sorg er en naturlig reaksjon når vi mister noe eller noen som betyr mye for oss. Depresjon er ikke det samme som å føle seg nedfor.
 
 Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør over en lang periode. Det er en tilstand preget av nedstemthet, lav selvfølelse og mindre interesse for aktiviteter som tidligere gav glede. Du kan også føle deg nedtrykt, sint og irritabel, eller tom for energi. Noen får også konsentrasjonsproblemer og husker dårligere.
 
-... heldigvis er det veldig gode muligheter for å bli frisk igjen.
+... heldigvis er det veldig gode muligheter for å bli frisk igjen.</textarea>
+        
+        <button onclick="translateText()" id="btn">Oversett til Engelsk</button>
+        <p id="status"></p>
+    </div>
 
-Depresjon kan ramme oss alle. Det er anslått at depresjon rammer én av fire personer i løpet av livet, og ulike faktorer kan være utløsende. For noen kan tidligere vonde opplevelser være den underliggende årsaken. For andre kan det være den nåværende situasjonen, for eksempel tapsopplevelser eller langvarige belastninger, som er den viktigste årsaken. Noen er også mer sårbare av natur.
-
-Sagt om depresjon:
-"Depresjon er som å være fargeblind og konstant bli fortalt hvor fargerik verden er." – Atticus Poetry
-"Psykisk smerte er mindre dramatisk enn fysisk smerte, men den er mer vanlig og også vanskeligere å bære." – C.S. Lewis
-"God humor er styrkende for kropp og sinn. Det er den beste motgiften for angst og depresjon. Det er en ressurs. Det tiltrekker seg og beholder venner. Det letter menneskelige byrder. Det er den direkte ruten til ro og tilfredshet." – Greenville Kleiser
-
-I had a black dog, his name was depression.
-Winston Churchill fortalte at han opplevde at han hadde med seg en sort hund hvor enn han gikk. I ettertid har vi skjønt at han i flere år var plaget med depressive perioder, og at han mente disse periodene når han snakket om den sorte hunden. Her er en fin film fra WHO om depresjon, symbolisert med den sorte hunden.
-
-I en depresjon er det som om man ser livet gjennom mørke briller. Dette innebærer negative tanker om seg selv, fremtiden og situasjonen rundt. Det er vanlig å ha tanker som "Alt er håpløst" og "Jeg er en taper", og stadig stille seg selv spørsmål om hvorfor det har blitt slik. Man angrer ofte på ting man har gjort, noe som fører med seg følelse av skyld eller skam. I så fall kan det også bli vanskelig å ta avgjørelser fordi man kan bli redd for å gjøre nye feil.
-
-Hva er vanlige symptomer på depresjon?
-- Redusert selvfølelse og selvtillit
-- Skyldfølelse og mindreverdighetsfølelse
-- Problemer med konsentrasjon og oppmerksomhet
-- Tanker og planer om selvmord
-- Tretthet og initiativløshet
-- Søvnforstyrrelser
-- Mer eller mindre matlyst
-- Følelse av "låst" kropp som gjør bevegelse vanskelig
-- Uro og rastløshet
-- Angst og bekymring
-
-Symptomene på depresjon skaper onde sirkler. De bidrar ofte til isolasjon og nedsatt aktivitetsnivå, hvor man slutter å gjøre ting som tidligere ga glede, mening og mestring. Dette igjen er med på å opprettholde depresjonen – eller «depresjonens onde sirkel». For å få det bedre, er det viktig å jobbe med både tanker og atferd!
-
-Symptomene ved depresjon kan føles veldig merkbare og inngripende i hverdagen. Dette kan være vanskelig å håndtere på egen hånd, men heldigvis finnes det god behandling som kan gi verktøyene du trenger for å bli bedre!
-
-En av de mest brukte behandlingsmetodene ved depresjon er kognitiv atferdsterapi. Hovedfokus i denne metoden er å bryte «depresjonens onde sirkel» og mønstre som er med å opprettholde symptomene. Det innebærer å gradvis starte opp med aktiviteter igjen, selv om både motivasjonen og lysten er totalt fraværende. Du må også forberede deg på å utfordre tankene dine og vise større hensyn til deg selv og kroppen din.
-
-"Å bli bedre fra depresjon krever varig forpliktelse. Jeg har tatt på meg den forpliktelsen for mitt eget livs skyld, og for de som elsker meg." – Susan Polis Schutz</textarea>
-            <div style="margin-top: 10px;">
-                <button onclick="translateText()" id="translateBtn">Kjør Oversettelse</button>
-            </div>
-            <p id="status"></p>
-        </div>
-
-        <div class="card">
-            <h3>3. Engelsk Resultat</h3>
-            <textarea id="targetText" readonly placeholder="Resultatet dukker opp her..."></textarea>
-        </div>
+    <div class="card">
+        <h3>Engelsk Resultat</h3>
+        <textarea id="targetText" readonly></textarea>
     </div>
 
     <script>
         async function translateText() {
             const apiKey = document.getElementById('apiKey').value;
             const text = document.getElementById('sourceText').value;
-            const apiType = document.getElementById('apiType').value;
             const statusEl = document.getElementById('status');
             const targetEl = document.getElementById('targetText');
-            const btn = document.getElementById('translateBtn');
+            const btn = document.getElementById('btn');
 
-            if (!apiKey) {
-                alert("Du må lime inn en API-nøkkel først!");
-                return;
-            }
-
-            // Vis at vi jobber
-            statusEl.innerText = "Sender til DeepL (via proxy)...";
-            statusEl.style.color = "#007bff";
+            statusEl.innerText = "Jobber...";
+            statusEl.style.color = "blue";
             btn.disabled = true;
-            btn.innerText = "Oversetter...";
-            targetEl.value = "";
 
-            // Velg riktig DeepL URL
-            const deepLBaseUrl = apiType === 'free' 
-                ? 'https://api-free.deepl.com/v2/translate' 
-                : 'https://api.deepl.com/v2/translate';
-
-            // BRUK PROXY: Vi sender forespørselen via corsproxy.io for å unngå CORS-feil i nettleseren
-            // OBS: Dette skal kun gjøres i testing, ikke i produksjon.
-            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(deepLBaseUrl);
+            // 1. Vi bruker 'NB' (Norsk Bokmål) i stedet for 'NO'
+            // 2. Vi bruker Proxy for å fikse CORS feilen i nettleseren
+            const deepLUrl = "https://api-free.deepl.com/v2/translate";
+            const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(deepLUrl);
 
             try {
                 const params = new URLSearchParams();
                 params.append('auth_key', apiKey);
                 params.append('text', text);
-                params.append('target_lang', 'EN-GB'); // Britisk Engelsk
-                params.append('source_lang', 'NO');
+                params.append('source_lang', 'NB'); // VIKTIG ENDRING: NB, ikke NO
+                params.append('target_lang', 'EN-GB');
 
                 const response = await fetch(proxyUrl, {
                     method: 'POST',
@@ -182,28 +73,16 @@ En av de mest brukte behandlingsmetodene ved depresjon er kognitiv atferdsterapi
                 });
 
                 if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(`Feilkode: ${response.status}. Detaljer: ${errText}`);
+                    const err = await response.text();
+                    throw new Error(err);
                 }
 
                 const data = await response.json();
-                
-                if (data.translations && data.translations.length > 0) {
-                    targetEl.value = data.translations[0].text;
-                    statusEl.innerText = "Oversettelse fullført!";
-                    statusEl.style.color = "green";
-                }
+                targetEl.value = data.translations[0].text;
+                statusEl.innerText = "Suksess!";
+                statusEl.style.color = "green";
 
             } catch (error) {
                 console.error(error);
-                statusEl.innerText = "Feil oppstod: " + error.message;
+                statusEl.innerText = "Feil: " + error.message;
                 statusEl.style.color = "red";
-                alert("Noe gikk galt. Sjekk konsollen (F12) for detaljer.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Kjør Oversettelse";
-            }
-        }
-    </script>
-</body>
-</html>

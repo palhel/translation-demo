@@ -3,65 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistert Selvhjelp - Artikkel</title>
+    <title>Assistert Selvhjelp - Profesjonell Demo</title>
     <style>
-        /* Grunnleggende design for å se ut som en moderne nettside */
+        /* DESIGN: Får det til å se ut som en ordentlig helse-nettside */
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; 
             margin: 0; 
-            background-color: #f9f9f9; 
-            color: #333; 
+            background-color: #f0f2f5; 
+            color: #1a1a1a; 
+            line-height: 1.6;
         }
 
-        /* Header / Meny */
+        /* Header / Navigasjon */
         header {
-            background-color: white;
-            border-bottom: 1px solid #ddd;
-            padding: 15px 40px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e1e4e8;
+            padding: 15px 10%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             position: sticky;
             top: 0;
+            z-index: 100;
         }
 
-        .logo { font-weight: bold; font-size: 1.2em; color: #0056b3; }
+        .logo { 
+            font-weight: 700; 
+            font-size: 1.4em; 
+            color: #0056b3; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-        /* Språkvelgeren */
-        .language-selector { display: flex; align-items: center; gap: 10px; }
-        select { 
-            padding: 8px 12px; 
-            border-radius: 20px; 
-            border: 1px solid #ccc; 
+        /* Språkvelger dropdown */
+        .language-selector select { 
+            padding: 10px 15px; 
+            border-radius: 6px; 
+            border: 1px solid #ced4da; 
             font-size: 14px; 
-            cursor: pointer; 
-            background-color: #f0f0f0;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        select:hover { background-color: #e0e0e0; }
+        .language-selector select:hover { border-color: #0056b3; }
 
-        /* Selve artikkelen */
+        /* Hovedinnhold */
         main {
             max-width: 800px;
             margin: 40px auto;
             background: white;
-            padding: 50px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 60px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
-        h1 { color: #2c3e50; margin-top: 0; }
+        /* Typografi for artikkelen */
+        h1 { color: #2c3e50; margin-bottom: 30px; font-size: 2.5em;}
+        h2 { color: #0056b3; margin-top: 40px; margin-bottom: 20px; font-size: 1.5em; }
         
-        .article-text {
-            font-size: 18px;
-            line-height: 1.6;
-            color: #444;
-            white-space: pre-line; /* Bevarer linjeskift fra teksten */
+        p { margin-bottom: 20px; font-size: 1.1em; color: #444; }
+        
+        ul { margin-bottom: 20px; padding-left: 20px; }
+        li { margin-bottom: 10px; font-size: 1.1em; color: #444; }
+
+        .quote {
+            font-style: italic;
+            border-left: 4px solid #0056b3;
+            padding-left: 20px;
+            margin: 30px 0;
+            color: #555;
+            background: #f9fbfd;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
         }
 
-        /* Laste-indikator */
-        .loading { opacity: 0.5; pointer-events: none; transition: opacity 0.3s; }
-        #loading-text { display: none; font-size: 0.9em; color: #007bff; margin-right: 10px;}
+        /* Laste-animasjon */
+        .loading-overlay {
+            opacity: 0.5;
+            pointer-events: none;
+            cursor: wait;
+        }
+        #status-text { 
+            font-size: 0.9em; 
+            font-weight: bold; 
+            color: #0056b3; 
+            margin-right: 15px; 
+            display: none; 
+        }
 
     </style>
 </head>
@@ -71,88 +100,122 @@
         <div class="logo">Assistert Selvhjelp</div>
         
         <div class="language-selector">
-            <span id="loading-text">Oversetter...</span>
+            <span id="status-text">Oversetter...</span>
             <select id="langSelect" onchange="changeLanguage()">
                 <option value="NO">🇳🇴 Norsk (Original)</option>
                 <option value="EN-GB">🇬🇧 Engelsk</option>
                 <option value="PL">🇵🇱 Polsk</option>
                 <option value="DE">🇩🇪 Tysk</option>
                 <option value="ES">🇪🇸 Spansk</option>
-                <option value="FR">🇫🇷 Fransk</option>
+                <option value="UA">🇺🇦 Ukrainsk</option>
             </select>
         </div>
     </header>
 
-    <main id="article-container">
-        <h1 id="article-title">Hva er depresjon?</h1>
+    <main id="content-area">
         
-        <div id="article-body" class="article-text">
-Det er helt normalt å føle seg nedfor, trist eller deppa innimellom, og sorg er en naturlig reaksjon når vi mister noe eller noen som betyr mye for oss. Depresjon er ikke det samme som å føle seg nedfor.
+        <h1 class="translate">Hva er depresjon?</h1>
+        
+        <p class="translate">
+            Det er helt normalt å føle seg nedfor, trist eller deppa innimellom, og sorg er en naturlig reaksjon når vi mister noe eller noen som betyr mye for oss. Depresjon er ikke det samme som å føle seg nedfor.
+        </p>
 
-Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør over en lang periode. Det er en tilstand preget av nedstemthet, lav selvfølelse og mindre interesse for aktiviteter som tidligere gav glede. Du kan også føle deg nedtrykt, sint og irritabel, eller tom for energi. Noen får også konsentrasjonsproblemer og husker dårligere.
+        <p class="translate">
+            Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør over en lang periode. Det er en tilstand preget av nedstemthet, lav selvfølelse og mindre interesse for aktiviteter som tidligere gav glede.
+        </p>
 
-... heldigvis er det veldig gode muligheter for å bli frisk igjen.
-
-Depresjon kan ramme oss alle. Det er anslått at depresjon rammer én av fire personer i løpet av livet, og ulike faktorer kan være utløsende. For noen kan tidligere vonde opplevelser være den underliggende årsaken. For andre kan det være den nåværende situasjonen, for eksempel tapsopplevelser eller langvarige belastninger, som er den viktigste årsaken. Noen er også mer sårbare av natur.
+        <div class="quote translate">
+            "Å bli bedre fra depresjon krever varig forpliktelse. Jeg har tatt på meg den forpliktelsen for mitt eget livs skyld."
         </div>
+
+        <h2 class="translate">Vanlige symptomer</h2>
+        
+        <p class="translate">Her er noen tegn du bør se etter:</p>
+        
+        <ul>
+            <li class="translate">Redusert selvfølelse og selvtillit</li>
+            <li class="translate">Skyldfølelse og mindreverdighetsfølelse</li>
+            <li class="translate">Problemer med konsentrasjon og oppmerksomhet</li>
+            <li class="translate">Søvnforstyrrelser (for mye eller for lite søvn)</li>
+            <li class="translate">Følelse av "låst" kropp som gjør bevegelse vanskelig</li>
+        </ul>
+
+        <p class="translate">
+            Symptomene på depresjon skaper onde sirkler. De bidrar ofte til isolasjon og nedsatt aktivitetsnivå, hvor man slutter å gjøre ting som tidligere ga glede, mening og mestring.
+        </p>
+
     </main>
 
     <input type="hidden" id="apiKey" value="83dcebb3-5c3e-4843-9124-1c4d05f002c8:fx">
 
     <script>
-        // Vi lagrer originalteksten i minnet, slik at vi alltid kan gå tilbake til norsk uten å bruke API
-        const originalTitle = document.getElementById('article-title').innerText;
-        const originalBody = document.getElementById('article-body').innerText;
+        // Vi lagrer originalteksten i minnet ved oppstart
+        // Dette gjør at vi kan bytte tilbake til norsk umiddelbart uten API-kall
+        const elementsToTranslate = document.querySelectorAll('.translate');
+        const originalTexts = [];
+        
+        elementsToTranslate.forEach((el, index) => {
+            el.dataset.id = index; // Gi hver bit en ID
+            originalTexts[index] = el.innerText; // Lagre original norsk tekst
+        });
 
         async function changeLanguage() {
             const lang = document.getElementById('langSelect').value;
-            const titleEl = document.getElementById('article-title');
-            const bodyEl = document.getElementById('article-body');
-            const loadingText = document.getElementById('loading-text');
             const apiKey = document.getElementById('apiKey').value;
+            const container = document.getElementById('content-area');
+            const status = document.getElementById('status-text');
 
-            // Hvis bruker velger Norsk, tilbakestill til originalen umiddelbart
+            // 1. Hvis norsk velges, hent fra minnet (gratis og lynraskt)
             if (lang === 'NO') {
-                titleEl.innerText = originalTitle;
-                bodyEl.innerText = originalBody;
+                elementsToTranslate.forEach((el, index) => {
+                    el.innerText = originalTexts[index];
+                });
                 return;
             }
 
-            // Vis at vi jobber
-            document.getElementById('article-container').classList.add('loading');
-            loadingText.style.display = 'inline';
+            // 2. Vis laste-status
+            status.style.display = 'inline';
+            status.innerText = 'Oversetter siden...';
+            container.classList.add('loading-overlay');
 
             try {
-                // Vi må oversette Tittel og Innhold hver for seg
-                // 1. Oversett Tittel
-                const newTitle = await translateString(originalTitle, lang, apiKey);
-                titleEl.innerText = newTitle;
+                // Vi samler all tekst i én bolk for å sende færre forespørsler til APIet (raskere)
+                // Vi bruker "___" som skille, slik at DeepL oversetter alt, men vi kan dele det opp igjen etterpå.
+                const separator = "\n___\n"; 
+                const textBlock = Array.from(elementsToTranslate).map(el => el.innerText).join(separator);
 
-                // 2. Oversett Innhold (Vi oversetter alltid FRA originalen for best kvalitet)
-                const newBody = await translateString(originalBody, lang, apiKey);
-                bodyEl.innerText = newBody;
+                // Send til API
+                const translatedBlock = await callDeepL(textBlock, lang, apiKey);
+
+                // Del opp svaret igjen
+                const translatedSegments = translatedBlock.split(separator.trim()); // Trim fjerner ekstra mellomrom
+
+                // Oppdater nettsiden med den nye teksten
+                elementsToTranslate.forEach((el, index) => {
+                    if (translatedSegments[index]) {
+                        el.innerText = translatedSegments[index].replace(/___/g, '').trim(); // Rens eventuelle rester
+                    }
+                });
 
             } catch (error) {
-                alert("Kunne ikke oversette: " + error.message);
-                // Hvis det feiler, gå tilbake til norsk i menyen
-                document.getElementById('langSelect').value = 'NO';
+                console.error(error);
+                alert("Noe gikk galt med oversettelsen.");
             } finally {
-                // Ferdig
-                document.getElementById('article-container').classList.remove('loading');
-                loadingText.style.display = 'none';
+                // Skru av laste-modus
+                container.classList.remove('loading-overlay');
+                status.style.display = 'none';
             }
         }
 
-        // Hjelpefunksjon som kaller API-et
-        async function translateString(textToTranslate, targetLang, key) {
+        async function callDeepL(text, targetLang, key) {
             const deepLUrl = "https://api-free.deepl.com/v2/translate";
+            // Proxy fiks for localhost testing
             const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(deepLUrl);
 
             const params = new URLSearchParams();
             params.append('auth_key', key);
-            params.append('text', textToTranslate);
+            params.append('text', text);
             params.append('target_lang', targetLang); 
-            // Vi lar source_lang være auto (slettet linjen)
 
             const response = await fetch(proxyUrl, {
                 method: 'POST',
@@ -160,8 +223,8 @@ Depresjon kan ramme oss alle. Det er anslått at depresjon rammer én av fire pe
                 body: params
             });
 
-            if (!response.ok) throw new Error("Feil fra API");
-
+            if (!response.ok) throw new Error("API Feil");
+            
             const data = await response.json();
             return data.translations[0].text;
         }

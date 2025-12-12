@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistert Selvhjelp Oversettelse (FIXED)</title>
+    <title>Assistert Selvhjelp Demo</title>
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f7f6; }
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -16,7 +16,7 @@
 </head>
 <body>
 
-    <h1>Oversettelse Test</h1>
+    <h1>Oversettelse Demo (Auto-Detect)</h1>
 
     <div class="card">
         <label>API Nøkkel:</label>
@@ -24,7 +24,7 @@
     </div>
 
     <div class="card">
-        <h3>Norsk Tekst (NB)</h3>
+        <h3>Norsk Tekst</h3>
         <textarea id="sourceText">Hva er depresjon?
 
 Det er helt normalt å føle seg nedfor, trist eller deppa innimellom, og sorg er en naturlig reaksjon når vi mister noe eller noen som betyr mye for oss. Depresjon er ikke det samme som å føle seg nedfor.
@@ -43,7 +43,10 @@ Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør ove
     </div>
 
     <script>
+        // Denne funksjonen kjøres når du trykker på knappen
         async function translateText() {
+            console.log("Knapp trykket! Starter oversettelse..."); // Sjekk konsollen (F12) for denne beskjeden
+            
             const apiKey = document.getElementById('apiKey').value;
             const text = document.getElementById('sourceText').value;
             const statusEl = document.getElementById('status');
@@ -54,8 +57,7 @@ Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør ove
             statusEl.style.color = "blue";
             btn.disabled = true;
 
-            // 1. Vi bruker 'NB' (Norsk Bokmål) i stedet for 'NO'
-            // 2. Vi bruker Proxy for å fikse CORS feilen i nettleseren
+            // Proxy brukes for å unngå CORS-feil lokalt
             const deepLUrl = "https://api-free.deepl.com/v2/translate";
             const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(deepLUrl);
 
@@ -63,7 +65,9 @@ Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør ove
                 const params = new URLSearchParams();
                 params.append('auth_key', apiKey);
                 params.append('text', text);
-                params.append('target_lang', 'EN-GB');
+                // VIKTIG: Vi har fjernet 'source_lang' helt. 
+                // DeepL skjønner automatisk at det er norsk.
+                params.append('target_lang', 'EN-GB'); 
 
                 const response = await fetch(proxyUrl, {
                     method: 'POST',
@@ -73,15 +77,27 @@ Depresjon er en psykisk lidelse som påvirker hva du føler, tenker og gjør ove
 
                 if (!response.ok) {
                     const err = await response.text();
-                    throw new Error(err);
+                    throw new Error(err); // Kaster feilmeldingen videre til catch-blokken
                 }
 
                 const data = await response.json();
-                targetEl.value = data.translations[0].text;
-                statusEl.innerText = "Suksess!";
-                statusEl.style.color = "green";
+                
+                if (data.translations && data.translations.length > 0) {
+                    targetEl.value = data.translations[0].text;
+                    statusEl.innerText = "Suksess!";
+                    statusEl.style.color = "green";
+                } else {
+                    statusEl.innerText = "Fikk svar, men ingen oversettelse.";
+                }
 
             } catch (error) {
-                console.error(error);
+                console.error("Noe gikk galt:", error);
                 statusEl.innerText = "Feil: " + error.message;
                 statusEl.style.color = "red";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
